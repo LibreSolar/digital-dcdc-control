@@ -8,7 +8,7 @@ Modeling and design of the DC/DC power stage in e.g. Libre Solar charge controll
 
 The script models the plant and divider circuitry using the state space method. From analysis of the zeros and poles, a second order approximation of the system is used (since the dominant response is second order). The second and third order responses are compared to show this is a valid approximation. 
 
-Ziegler Nichols tuning techniques are applied using the rules here:  http://faculty.mercer.edu/jenkins_he/documents/TuningforPIDControllers.pdf
+Ziegler Nichols tuning techniques are applied using the rules [here](http://faculty.mercer.edu/jenkins_he/documents/TuningforPIDControllers.pdf)
 
 However, the output of this does not provide an improved step response. 
 
