@@ -1,4 +1,5 @@
 %% Load necessary packages
+
 pkg load control;
 pkg load signal;
 clc;
@@ -54,7 +55,7 @@ grid on;
     %% Pade (Octave): https://octave.sourceforge.io/octave/function/padecoef.html
     %% Pade (Wiki): https://en.wikipedia.org/wiki/Pad%C3%A9_table
 
- %TO BE IMPLEMENTED
+% TO BE IMPLEMENTED
 
 
 % plotting Step Response of Plant:
@@ -67,16 +68,16 @@ grid on;
 
     %Stepinfo function now available based on funtion forum input here: https://lists.gnu.org/archive/html/help-octave/2015-02/msg00023.html
     % Function is not verified as working.
-##    plant_info = stepinfo(plant);
-##    [Wn_plant,DR_plant,Poles_plant] = damp(plant);
+%    plant_info = stepinfo(plant);
+%    [Wn_plant,DR_plant,Poles_plant] = damp(plant);
 
  % BEWARE 0 Stepinfo function is providing incorrect information.
-##    temp1 = sqrt((4*(DR_plant(1))^4) - (4*(DR_plant(1))^2) +2);
-##    temp2 =  1 - (2*(DR_plant(1))^2);
-##
-##    %%Depends on plant info - using current stepinfo command (not tested)
-##    temp3 = 4/(plant_info.SettlingTime*(DR_plant(1)));
-##    BW_plant = temp3*sqrt(temp1 + temp2)
+%    temp1 = sqrt((4*(DR_plant(1))^4) - (4*(DR_plant(1))^2) +2);
+%    temp2 =  1 - (2*(DR_plant(1))^2);
+%
+%    %%Depends on plant info - using current stepinfo command (not tested)
+%    temp3 = 4/(plant_info.SettlingTime*(DR_plant(1)));
+%    BW_plant = temp3*sqrt(temp1 + temp2)
 
 % plotting Bode plot for Plant:
 
@@ -125,8 +126,8 @@ grid on;
 %Check system controlability:
 
 %TO BE IMPLEMENTED
-##    [A B C D] = tf2ss(plant_plus_divider)
-##    rank_system = rank(ctrb(A,B))   %Ensure
+%    [A B C D] = tf2ss(plant_plus_divider)
+%    rank_system = rank(ctrb(A,B))   %Ensure
 
 
 
@@ -151,30 +152,33 @@ grid on;
     title('Comparison of divider circuits')
     legend("Cp = 10e-9 (Hardware)", "Cp = 0.6e-9 (Theory)")
 
-%Check plant_plus_divider poles and zeros to simplify the model
-    %%Dominant pole approximation to simplify model
-    %https://lpsa.swarthmore.edu/PZXferStepBode/DomPole.html
+% Check plant_plus_divider poles and zeros to simplify the model
+% Dominant pole approximation to simplify model
+% https://lpsa.swarthmore.edu/PZXferStepBode/DomPole.html
 
     [zeros, poles, k] = tf2zp(plant_plus_divider);
 
 
 %%--- OUTPUT --- %%
-##      zeros = -29036.00465
-##      poles =
-##
-##        -18857.14286 +     0.00000i
-##         -1060.94289 +  7356.99698i
-##         -1060.94289 -  7356.99698i
-##
-##      k =  35874439.46188
+%{
+    zeros = -29036.00465
+    poles =
 
-##>> plant_plus_divider
-##
-##    Transfer function 'plant_plus_divider' from input 'u1' to output ...
-##
-##                        1902 s + 5.524e+07
-##     y1:  ----------------------------------------------
-##          5.303e-05 s^3 + 1.113 s^2 + 5052 s + 5.525e+07
+    -18857.14286 +     0.00000i
+    -1060.94289 +  7356.99698i
+    -1060.94289 -  7356.99698i
+
+    k =  35874439.46188
+%}
+
+%>> plant_plus_divider
+%{
+    Transfer function 'plant_plus_divider' from input 'u1' to output ...
+
+                        1902 s + 5.524e+07
+     y1:  ----------------------------------------------
+          5.303e-05 s^3 + 1.113 s^2 + 5052 s + 5.525e+07
+%}
 
 %Use output to determine a simpler model
 % Since the second and third poles are dominant, the first pole at s = 188857 can be ignored.
@@ -225,12 +229,14 @@ grid on;
 
 % Sense check that bode plots are plotting correctly.
 
-##    figure(10)
-##    bode(plant_plus_divider)
-##    title("Actual bode plot for third order model")
-##    figure(11)
-##    bode(second_order)
-##    title("Actual bode plot for second order model")
+%{
+    figure(10)
+    bode(plant_plus_divider)
+    title("Actual bode plot for third order model")
+    figure(11)
+    bode(second_order)
+    title("Actual bode plot for second order model")
+%}
 
 %%--- TUNING  METHODS --- %%
 
@@ -277,24 +283,24 @@ grid on;
    D_3 = 0.5*L;
 
 
-%Define feedback transfer functions
-  s = tf('s');
-  FB_P = tf(P_1 + I_1/s + D_1*s);
-  FB_PI = tf(P_2 + I_2/s + D_2*s);
-  FB_PID = tf(P_3 + I_3/s + D_3*s);
+% Define feedback transfer functions
+    s = tf('s');
+    FB_P = tf(P_1 + I_1/s + D_1*s);
+    FB_PI = tf(P_2 + I_2/s + D_2*s);
+    FB_PID = tf(P_3 + I_3/s + D_3*s);
 
-%Apply feedback loop
+% Apply feedback loop
 
 %% CHOICE TO APPLY FEEDBACK LOOP TO SECOND OR THIRD ORDER SYSTEM
-  %Second order
-##  PID_P = feedback(second_order,FB_P);
-##  PID_PI = feedback(second_order,FB_PI);
-##  PID_PID = feedback(second_order,FB_PID);
+    %Second order
+%    PID_P = feedback(second_order,FB_P);
+%    PID_PI = feedback(second_order,FB_PI);
+%    PID_PID = feedback(second_order,FB_PID);
 
-  %Third order
-  PID_P = feedback(plant_plus_divider,FB_P);
-  PID_PI = feedback(plant_plus_divider,FB_PI);
-  PID_PID = feedback(plant_plus_divider,FB_PID);
+    %Third order
+    PID_P = feedback(plant_plus_divider,FB_P);
+    PID_PI = feedback(plant_plus_divider,FB_PI);
+    PID_PID = feedback(plant_plus_divider,FB_PID);
 % Get step data
 
     [y_P, t_P, x_P] = step(PID_P);
@@ -319,9 +325,6 @@ grid on;
     legend("P control", "PI control", "PID control")
 
 
-
-
-
 %% -- OTHER FEEDBACK METHODS --
 %% Find ultimate gain with feedback
 %% Pol placement method
@@ -329,23 +332,24 @@ grid on;
 
 %% Additional Notes (legacy code) for discrete time modelling of the converter
 
-##%% Control-to-output-voltage transfer function (Discrete time domain):
-##% Literature : Applying Digital Technology to PWM Control-Loop Designs
-##    % Discrete time modelling (Trailing Edge DPWM and sampling at interval 2(DTs < td < Ts)):
-##
-##        % phi   = (exp(A2*(Ts-td)))*(exp(A1*Duty*Ts))*exp(A2*(td-Duty*Ts));
-##        % alpha = (B1 - B2)*Vg;
-##        % gamma = (exp(A2*(Ts-td)))*alpha*Ts;
-##        % z     = tf('z');
-##        % Gvd   = (C* inv(I-((1/z)*phi))*gamma)/z
-##
-##
-##% Literature (Small-Signal Discrete-Time Modeling of Digitally Controlled PWM Converters)
-##    % Direct equation:
-##
-##     z      = tf('z');
-##     Num    = z + (Ts/(Ts- td + Cap*Resr))*((Resr/R)-((Cap*Resr)/Ts)- (((Ts-td)*Resr)/L)+(td/Ts));
-##     Dem    = z^2 - (2 - (Ts/(R*Cap)))*z + (1 - Ts/(R*Cap) + Ts^2/(L*Cap));
-##     Gvd2   = ((Vg*Ts*(Ts- td + Cap*Resr))*Num)/(L*Cap*Dem)
+%% Control-to-output-voltage transfer function (Discrete time domain):
+% Literature : Applying Digital Technology to PWM Control-Loop Designs
+% Discrete time modelling (Trailing Edge DPWM and sampling at interval 2(DTs < td < Ts)):
+%{
+    phi   = (exp(A2*(Ts-td)))*(exp(A1*Duty*Ts))*exp(A2*(td-Duty*Ts));
+    alpha = (B1 - B2)*Vg;
+    gamma = (exp(A2*(Ts-td)))*alpha*Ts;
+    z     = tf('z');
+    Gvd   = (C* inv(I-((1/z)*phi))*gamma)/z
+%}
+
+%% Literature (Small-Signal Discrete-Time Modeling of Digitally Controlled PWM Converters)
+% Direct equation:
+%{
+    z      = tf('z');
+    Num    = z + (Ts/(Ts- td + Cap*Resr))*((Resr/R)-((Cap*Resr)/Ts)- (((Ts-td)*Resr)/L)+(td/Ts));
+    Dem    = z^2 - (2 - (Ts/(R*Cap)))*z + (1 - Ts/(R*Cap) + Ts^2/(L*Cap));
+    Gvd2   = ((Vg*Ts*(Ts- td + Cap*Resr))*Num)/(L*Cap*Dem)
+%}
 
 pause
