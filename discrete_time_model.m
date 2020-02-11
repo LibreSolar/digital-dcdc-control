@@ -347,3 +347,5 @@ grid on;
 ##     Num    = z + (Ts/(Ts- td + Cap*Resr))*((Resr/R)-((Cap*Resr)/Ts)- (((Ts-td)*Resr)/L)+(td/Ts));
 ##     Dem    = z^2 - (2 - (Ts/(R*Cap)))*z + (1 - Ts/(R*Cap) + Ts^2/(L*Cap));
 ##     Gvd2   = ((Vg*Ts*(Ts- td + Cap*Resr))*Num)/(L*Cap*Dem)
+
+pause
