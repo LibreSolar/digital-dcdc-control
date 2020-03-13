@@ -242,11 +242,14 @@ grid on;
 
 % http://faculty.mercer.edu/jenkins_he/documents/TuningforPIDControllers.pdf
 
+
+%%--- ZIEGLER NICHOLS TUNING --- %%
+
 %From inspection values of L (dead time) and T (time constant) are:
 % L = 0.00006s
 % T = 0.00017s
 
-% Ziegler-Nichls Tuning Rules give
+% Ziegler-Nichl0s Tuning Rules give
 
 %% P Controller (1)
 % P_1 = T/L
@@ -271,7 +274,7 @@ grid on;
 %Define PID Parameters
 
    P_1 = T/L;  %P control only
-   I_1 = 1e30;% approximately Inf
+   I_1 = 5;% approximately Inf
    D_1 = 0;
 
    P_2 = 0.9*T/L;  %PI control
@@ -285,6 +288,10 @@ grid on;
 
 % Define feedback transfer functions
     s = tf('s');
+    
+    %% EDIT TRIAL CASE
+   
+    
     FB_P = tf(P_1 + I_1/s + D_1*s);
     FB_PI = tf(P_2 + I_2/s + D_2*s);
     FB_PID = tf(P_3 + I_3/s + D_3*s);
@@ -293,14 +300,14 @@ grid on;
 
 %% CHOICE TO APPLY FEEDBACK LOOP TO SECOND OR THIRD ORDER SYSTEM
     %Second order
-%    PID_P = feedback(second_order,FB_P);
-%    PID_PI = feedback(second_order,FB_PI);
-%    PID_PID = feedback(second_order,FB_PID);
+    PID_P = feedback(second_order,FB_P);
+    PID_PI = feedback(second_order,FB_PI);
+    PID_PID = feedback(second_order,FB_PID);
 
     %Third order
-    PID_P = feedback(plant_plus_divider,FB_P);
-    PID_PI = feedback(plant_plus_divider,FB_PI);
-    PID_PID = feedback(plant_plus_divider,FB_PID);
+%    PID_P = feedback(plant_plus_divider,FB_P);
+%    PID_PI = feedback(plant_plus_divider,FB_PI);
+%    PID_PID = feedback(plant_plus_divider,FB_PID);
 % Get step data
 
     [y_P, t_P, x_P] = step(PID_P);
@@ -318,16 +325,209 @@ grid on;
     figure(7)
     plot(t_P,y_P, 'r:');
     hold on;
+    %plot(t3, y3,'g-')
     plot(t_PI,y_PI, 'k--');
     plot(t_PID,y_PID, 'b-.');
     hold off;
-    title('Comparison P, PI and PID control')
-    legend("P control", "PI control", "PID control")
+    title('Comparison P, PI and PID control - Ziegler Nichlos Method')
+
+    l1 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_1, I_1,D_1)
+    l2 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_2, I_2,D_2)
+    l3 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_3, I_3,D_3)
+    legend(l1, l2, l3)
+    
+%%Plot figures independently to increase clarity
+
+%Comment to reduce number of figure outputs 
+   
+%    figure(10)
+%    plot(t_P,y_P, 'r:');
+%    title('P control - Ziegler Nichlos Method')
+%    legend(l1)
+%    
+%    figure(11)
+%    plot(t_PI,y_PI, 'r:');
+%    title('PI control - Ziegler Nichlos Method')
+%    legend(l2)
+%    
+%    figure(12)
+%    plot(t_PID,y_PID, 'r:');
+%    title('PID control - Ziegler Nichlos Method')
+%    legend(l3)
+    
+%%% Check impulse responses 
+
+    [y_P, t_P, x_P] = impulse(PID_P);
+    [y_PI, t_PI, x_PI] = impulse(PID_PI);
+    [y_PID, t_PID, x_PID] = impulse(PID_PID);
+
+%Plot comparison of impulse responses
+
+%Comment to reduce number of figure outputs 
+    
+%    figure(30)
+%    plot(t_P,y_P, 'r:');
+%    title('P control - Ziegler Nichlos Method - Impulse Response')
+%    legend(l1)
+%    
+%    figure(31)
+%    plot(t_PI,y_PI, 'r:');
+%    title('PI control - Ziegler Nichlos Method - Impulse Response')
+%    legend(l2)
+%    
+%    figure(32)
+%    plot(t_PID,y_PID, 'r:');
+%    title('PID control - Ziegler Nichlos Method - Impulse Response')
+%    legend(l3)
+    
 
 
-%% -- OTHER FEEDBACK METHODS --
+%%--- ULTIMATE GAIN TUNING --- %%
 %% Find ultimate gain with feedback
-%% Pol placement method
+
+%Ultimate Gain sits at approx K = 3.3098; This can be shown by running the following code. From inspection the period can be found as T = 120s
+
+%  for(i=1:20)
+%      gain = (3.30979+0.000001*i)
+%      PID_U = feedback(plant_plus_divider,gain);
+%      [y_U, t_U, x_U] = step(PID_U);
+%      figure(100+i)
+%      t_str = sprintf('Feedback control with gain - %.1f',gain);
+%      title(t_str)
+%      plot(t_U,y_U, 'r:');
+%  endfor
+
+% Tuning formulae
+
+%% P Controller (1)
+% UP_1 = 0.5*ult_gain
+% UI_1 = Inf. 
+% UD_1 = 0
+
+%% PI COntroller (2)
+% UP_2 = 0.45*ult_gain
+% UI_2 = 1*ult_period/1.2
+% UD_2 = 0
+
+%% PID Controller (3)
+% UP_3 = 0.6*ult_gain
+% UI_3 = 0.5*ult_period
+% UD_3 = 0.125*ult_period
+
+% Read parameters
+
+   ult_gain = 3.3;
+   ult_period = 120;
+
+%Define PID Parameters
+
+   UP_1 = 0.5*ult_gain;  %P control only
+   UI_1= 5;% approximately Inf
+   UD_1 = 0;
+   
+   UP_2 = 0.45*ult_gain;
+   UI_2 = 1*ult_period/1.2;
+   UD_2 = 0;
+
+   UP_3 = 0.6*ult_gain;  %PID control
+   UI_3 = 0.5*ult_period;
+   UD_3 = 0.125*ult_period;
+
+
+% Define feedback transfer functions
+    s = tf('s');
+
+    FB_UP = tf(UP_1 + UI_1/s + UD_1*s);
+    FB_UPI = tf(UP_2 + UI_2/s + UD_2*s);
+    FB_UPID = tf(UP_3 + UI_3/s + UD_3*s);
+
+% Apply feedback loop
+
+%% CHOICE TO APPLY FEEDBACK LOOP TO SECOND OR THIRD ORDER SYSTEM
+    %Second order
+    UPID_P = feedback(second_order,FB_UP);
+    UPID_PI = feedback(second_order,FB_UPI);
+    UPID_PID = feedback(second_order,FB_UPID);
+
+    %Third order
+%    PID_P = feedback(plant_plus_divider,FB_P);
+%    PID_PI = feedback(plant_plus_divider,FB_PI);
+%    PID_PID = feedback(plant_plus_divider,FB_PID);
+% Get step data
+
+    [y_P, t_P, x_P] = step(UPID_P);
+    [y_PI, t_PI, x_PI] = step(UPID_PI);
+    [y_PID, t_PID, x_PID] = step(UPID_PID);
+
+% Get bode data
+
+    [mag_P, pha_P, w_P] = bode(UPID_P);
+    [mag_PI, pha_PI, w_PI] = bode(UPID_PI);
+    [mag_PID, pha_PID, w_PID] = bode(UPID_PID);
+
+%Plot comparison of step responses
+
+    figure(8)
+    plot(t_P,y_P, 'r:');
+    hold on;
+    %plot(t3, y3,'g-')
+    plot(t_PI,y_PI, 'k--');
+    plot(t_PID,y_PID, 'b-.');
+    hold off;
+    title('Comparison P, PI and PID control - Ultimate Gain Method')
+    l1 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_1, UI_1,UD_1)
+    l2 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_2, UI_2,UD_2)
+    l3 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_3, UI_3,UD_3)
+    legend(l1, l2, l3)
+
+%%Plot figures independently to increase clarity
+
+%Comment to reduce number of figure outputs 
+   
+%    figure(20)
+%    plot(t_P,y_P, 'r:');
+%    title('P control - Ultimate Gain Method')
+%    legend(l1)
+%    
+%    figure(21)
+%    plot(t_PI,y_PI, 'r:');
+%    title('PI control - Ultimate Gain Method')
+%    legend(l2)
+%    
+%    figure(22)
+%    plot(t_PID,y_PID, 'r:');
+%    title('PID control - Ultimate Gain Method')
+%    legend(l3)
+
+  
+%%% Check impulse responses 
+
+    [y_P, t_P, x_P] = impulse(UPID_P);
+    [y_PI, t_PI, x_PI] = impulse(UPID_PI);
+    [y_PID, t_PID, x_PID] = impulse(UPID_PID);
+
+%Plot comparison of impulse responses
+
+%Comment to reduce number of figure outputs 
+       
+%    figure(33)
+%    plot(t_P,y_P, 'r:');
+%    title('P control - Ultimate Gain Method - Impulse Response')
+%    legend(l1)
+%    
+%    figure(34)
+%    plot(t_PI,y_PI, 'r:');
+%    title('PI control - Ultimate Gain Method - Impulse Response')
+%    legend(l2)
+%    
+%    figure(35)
+%    plot(t_PID,y_PID, 'r:');
+%    title('PID control - Ultimate Gain Method - Impulse Response')
+%    legend(l3)
+
+
+
+
 
 
 %% Additional Notes (legacy code) for discrete time modelling of the converter
