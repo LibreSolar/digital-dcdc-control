@@ -60,9 +60,9 @@ grid on;
 
 % plotting Step Response of Plant:
 
-    figure(1);
-    step(plant);
-    title('Step Response of the Plant only');
+%    figure(1);
+%    step(plant);
+%    title('Step Response of the Plant only');
 
 % Calculation of Bandwidth of the Plant:
 
@@ -82,10 +82,10 @@ grid on;
 % plotting Bode plot for Plant:
 
     %% Use bode (Octave) vs bodeplot (Matlab) , similar functionality
-    figure(2)
-    bode(plant);
-    title('Bode diagram of the Plant only (continous model)');
-    [Gm_Plant,Pm_Plant,Wcg_Plant,Wcp_Plant] = margin(plant);
+%    figure(2)
+%    bode(plant);
+%    title('Bode diagram of the Plant only (continous model)');
+%    [Gm_Plant,Pm_Plant,Wcg_Plant,Wcp_Plant] = margin(plant);
 
 
 
@@ -117,11 +117,11 @@ grid on;
     [y1, t1, x1] = step(plant_plus_divider); % Get info for multiple plotting on the same axis
     [mag1, pha1, w1] = bode(plant_plus_divider); % Get info for multiple plotting on the same axis
 
-    figure(3);
-    step(plant_plus_divider);
-    title('Step Response of the Plant Plus Divider');
-    legend("Plant Plus Divider")
-    [Gm_plant_plus_divider,Pm_plant_plus_divider,Wcg_plant_plus_divider,Wcp_plant_plus_divider] = margin(plant_plus_divider);
+%    figure(3);
+%    step(plant_plus_divider);
+%    title('Step Response of the Plant Plus Divider');
+%    legend("Plant Plus Divider")
+%    [Gm_plant_plus_divider,Pm_plant_plus_divider,Wcg_plant_plus_divider,Wcp_plant_plus_divider] = margin(plant_plus_divider);
 
 %Check system controlability:
 
@@ -144,19 +144,19 @@ grid on;
     [mag2, pha2, w2] = bode(plant_plus_divider_2);
 
 %Plot comparison of step responses
-    figure(4)
-    plot(t1,y1, 'r:');
-    hold on;
-    plot(t2,y2, 'k--');
-    hold off;
-    title('Comparison of divider circuits')
-    legend("Cp = 10e-9 (Hardware)", "Cp = 0.6e-9 (Theory)")
+%    figure(4)
+%    plot(t1,y1, 'r:');
+%    hold on;
+%    plot(t2,y2, 'k--');
+%    hold off;
+%    title('Comparison of divider circuits')
+%    legend("Cp = 10e-9 (Hardware)", "Cp = 0.6e-9 (Theory)")
 
 % Check plant_plus_divider poles and zeros to simplify the model
 % Dominant pole approximation to simplify model
 % https://lpsa.swarthmore.edu/PZXferStepBode/DomPole.html
 
-    [zeros, poles, k] = tf2zp(plant_plus_divider);
+    [find_zeros, poles, k] = tf2zp(plant_plus_divider);
 
 
 %%--- OUTPUT --- %%
@@ -189,7 +189,7 @@ grid on;
     B = 2*1060.94289;
     C =  7356.99698^2;
 
-    second_order = tf([K],[A B C])
+    second_order = tf([K],[A B C]);
 
 %Assess new second order model vs thrid order
 
@@ -198,34 +198,36 @@ grid on;
 
 %Plot comparison of step responses
 
-    figure(5)
-    plot(t1,y1, 'r:');
-    hold on;
-    plot(t3,y3, 'k--');
-    hold off;
-    title('Comparison second order and third order model')
-    legend("Third order model", "Second order model")
+%    figure(5)
+%    plot(t1,y1, 'r:');
+%    hold on;
+%    plot(t3,y3, 'k--');
+%    hold off;
+%    title('Comparison second order and third order model')
+%    legend("Third order model", "Second order model")
 
 %% Multiple bode plots
 
-    figure(6)
-    grid on;
+%% Comment to save computation time
 
-    subplot(2,1,1)
-    hold on;
-    semilogx(w1,20*log10(abs(mag1)));
-    semilogx(w3,20*log10(abs(mag3)));
-    hold off;
-    legend("Third order model", "Second order model");
-    title("Constructed magnitude plot for comparison of second and third order models");
-
-    subplot(2,1,2)
-    hold on;
-    semilogx(w1, pha1);
-    semilogx(w3, pha3);
-    hold off;
-    legend("Third order model", "Second order model");
-    title("Constructed phase plot for comparison of second and third order models");
+%    figure(6)
+%    grid on;
+%
+%    subplot(2,1,1)
+%    hold on;
+%    semilogx(w1,20*log10(abs(mag1)));
+%    semilogx(w3,20*log10(abs(mag3)));
+%    hold off;
+%    legend("Third order model", "Second order model");
+%    title("Constructed magnitude plot for comparison of second and third order models");
+%
+%    subplot(2,1,2)
+%    hold on;
+%    semilogx(w1, pha1);
+%    semilogx(w3, pha3);
+%    hold off;
+%    legend("Third order model", "Second order model");
+%    title("Constructed phase plot for comparison of second and third order models");
 
 % Sense check that bode plots are plotting correctly.
 
@@ -331,9 +333,9 @@ grid on;
     hold off;
     title('Comparison P, PI and PID control - Ziegler Nichlos Method')
 
-    l1 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_1, I_1,D_1)
-    l2 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_2, I_2,D_2)
-    l3 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_3, I_3,D_3)
+    l1 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_1, I_1,D_1);
+    l2 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_2, I_2,D_2);
+    l3 = sprintf('P = %.1f, I = %.1f, D = %.1f', P_3, I_3,D_3);
     legend(l1, l2, l3)
     
 %%Plot figures independently to increase clarity
@@ -357,9 +359,9 @@ grid on;
     
 %%% Check impulse responses 
 
-    [y_P, t_P, x_P] = impulse(PID_P);
-    [y_PI, t_PI, x_PI] = impulse(PID_PI);
-    [y_PID, t_PID, x_PID] = impulse(PID_PID);
+%    [y_P, t_P, x_P] = impulse(PID_P);
+%    [y_PI, t_PI, x_PI] = impulse(PID_PI);
+%    [y_PID, t_PID, x_PID] = impulse(PID_PID);
 
 %Plot comparison of impulse responses
 
@@ -416,8 +418,8 @@ grid on;
 
 % Read parameters
 
-   ult_gain = 3.3;
-   ult_period = 120;
+   ult_gain = 3.30979;
+   ult_period = 120;  %120 is read value
 
 %Define PID Parameters
 
@@ -475,36 +477,36 @@ grid on;
     plot(t_PID,y_PID, 'b-.');
     hold off;
     title('Comparison P, PI and PID control - Ultimate Gain Method')
-    l1 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_1, UI_1,UD_1)
-    l2 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_2, UI_2,UD_2)
-    l3 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_3, UI_3,UD_3)
+    l1 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_1, UI_1,UD_1);
+    l2 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_2, UI_2,UD_2);
+    l3 = sprintf('P = %.1f, I = %.1f, D = %.1f', UP_3, UI_3,UD_3);
     legend(l1, l2, l3)
 
 %%Plot figures independently to increase clarity
 
 %Comment to reduce number of figure outputs 
    
-%    figure(20)
-%    plot(t_P,y_P, 'r:');
-%    title('P control - Ultimate Gain Method')
-%    legend(l1)
-%    
-%    figure(21)
-%    plot(t_PI,y_PI, 'r:');
-%    title('PI control - Ultimate Gain Method')
-%    legend(l2)
-%    
-%    figure(22)
-%    plot(t_PID,y_PID, 'r:');
-%    title('PID control - Ultimate Gain Method')
-%    legend(l3)
+    figure(20)
+    plot(t_P,y_P, 'r:');
+    title('P control - Ultimate Gain Method')
+    legend(l1)
+    
+    figure(21)
+    plot(t_PI,y_PI, 'r:');
+    title('PI control - Ultimate Gain Method')
+    legend(l2)
+    
+    figure(22)
+    plot(t_PID,y_PID, 'r:');
+    title('PID control - Ultimate Gain Method')
+    legend(l3)
 
   
 %%% Check impulse responses 
 
-    [y_P, t_P, x_P] = impulse(UPID_P);
-    [y_PI, t_PI, x_PI] = impulse(UPID_PI);
-    [y_PID, t_PID, x_PID] = impulse(UPID_PID);
+%    [y_P, t_P, x_P] = impulse(UPID_P);
+%    [y_PI, t_PI, x_PI] = impulse(UPID_PI);
+%    [y_PID, t_PID, x_PID] = impulse(UPID_PID);
 
 %Plot comparison of impulse responses
 
@@ -526,7 +528,99 @@ grid on;
 %    legend(l3)
 
 
+% --- FINE TUNING OF ULTIMATE GAIN METHOD --- %
 
+% Read parameters
+
+   ult_gain = 3.30979;
+   ult_period_1 = 15;  %120 is read value
+   ult_period_2 = 7.5;
+   ult_period_3 = 3.75;
+
+%Define PID Parameters
+
+   UP_1 = 0.6*ult_gain;  %PID control
+   UI_1 = 0.5*ult_period_1;
+   UD_1 = 0.125*ult_period_1;
+   
+   
+   UP_2 = 0.6*ult_gain;  %PID control
+   UI_2 = 0.5*ult_period_2;
+   UD_2 = 0.125*ult_period_2;
+
+   
+   UP_3 = 0.6*ult_gain;  %PID control
+   UI_3 = 0.5*ult_period_3;
+   UD_3 = 0.125*ult_period_3;
+
+
+% Define feedback transfer functions
+    s = tf('s');
+
+    FB_UP = tf(UP_1 + UI_1/s + UD_1*s);
+    FB_UPI = tf(UP_2 + UI_2/s + UD_2*s);
+    FB_UPID = tf(UP_3 + UI_3/s + UD_3*s);
+
+% Apply feedback loop
+
+%% CHOICE TO APPLY FEEDBACK LOOP TO SECOND OR THIRD ORDER SYSTEM
+    %Second order
+    UPID_P = feedback(second_order,FB_UP);
+    UPID_PI = feedback(second_order,FB_UPI);
+    UPID_PID = feedback(second_order,FB_UPID);
+
+    %Third order
+%    PID_P = feedback(plant_plus_divider,FB_P);
+%    PID_PI = feedback(plant_plus_divider,FB_PI);
+%    PID_PID = feedback(plant_plus_divider,FB_PID);
+% Get step data
+
+    [y_P, t_P, x_P] = step(UPID_P);
+    [y_PI, t_PI, x_PI] = step(UPID_PI);
+    [y_PID, t_PID, x_PID] = step(UPID_PID);
+
+% Get bode data
+
+    [mag_P, pha_P, w_P] = bode(UPID_P);
+    [mag_PI, pha_PI, w_PI] = bode(UPID_PI);
+    [mag_PID, pha_PID, w_PID] = bode(UPID_PID);
+
+%Plot comparison of step responses
+
+    figure(8)
+    plot(t_P,y_P, 'r:');
+    hold on;
+    %plot(t3, y3,'g-')
+    plot(t_PI,y_PI, 'k--');
+    plot(t_PID,y_PID, 'b-.');
+    hold off;
+    title('Comparison high, med and low ultimate period - Ultimate Gain Method')
+    l1 = sprintf('Period = %.1f, P = %.1f, I = %.1f, D = %.1f', ult_period_1,UP_1, UI_1,UD_1);
+    l2 = sprintf('Period = %.1f, P = %.1f, I = %.1f, D = %.1f', ult_period_2, UP_2, UI_2,UD_2);
+    l3 = sprintf('Period = %.1f, P = %.1f, I = %.1f, D = %.1f', ult_period_3, UP_3, UI_3,UD_3);
+    legend(l1, l2, l3)
+
+%%Plot figures independently to increase clarity
+
+%Comment to reduce number of figure outputs 
+   
+    figure
+    plot(t_P,y_P, 'r:');
+    t1 = sprintf('Period = %.0f - Ultimate Gain Fine Tuning', ult_period_1);
+    title(t1)
+    legend(l1)
+    
+    figure
+    plot(t_PI,y_PI, 'r:');
+    t2 = sprintf('Period = %.0f - Ultimate Gain Fine Tuning', ult_period_2);
+    title(t2)
+    legend(l2)
+    
+    figure
+    plot(t_PID,y_PID, 'r:');
+    t3 = sprintf('Period = %.0f - Ultimate Gain Fine Tuning', ult_period_3);
+    title(t3)
+    legend(l3)
 
 
 
