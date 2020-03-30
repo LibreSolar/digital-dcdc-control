@@ -5,10 +5,13 @@ source plant_model.m
 
 % The Octave bode function returns omega (rad/s), so we need to convert to frequency
 
-[mag1, pha1, w1] = bode(G_plant);
+function plot_model_plot(plant_1, plant_2, title_str = "Bode plot")
+
+
+[mag1, pha1, w1] = bode(plant_1);
 f1 = w1 ./ (2*pi);
 
-[mag2, pha2, w2] = bode(G_plant_div);
+[mag2, pha2, w2] = bode(plant_2);
 f2 = w2 ./ (2*pi);
 
 % Magnitude
@@ -17,15 +20,16 @@ figure()
 subplot (2, 1, 1)
 hold on
 box on
-semilogx (f1/1000, mag2db(mag1), ";Plant only;")
-semilogx (f2/1000, mag2db(mag2), ";Plant and voltage div.;")
+semilogx (f1/1000, mag2db(mag1))
+semilogx (f2/1000, mag2db(mag2))
 hold off
+legend(plant_1.name, plant_2.name)
 axis ("tight")
 ylim ([-50, 20])
 xlim ([0.1, 300])
 set (gca, "xticklabel", num2str (get (gca, "xtick"), '%g|'))
 grid ("on")
-title ("Bode plot")
+title (title_str)
 ylabel ("Magnitude (dB)")
 set (gca, 'fontsize', 14);
 h = legend ("location", "southwest");
@@ -47,6 +51,8 @@ grid ("on")
 xlabel ("Frequency (kHz)")
 ylabel ("Phase (deg)")
 set (gca, 'fontsize', 14);
+
+endfunction
 
 
 % Step response of plant
