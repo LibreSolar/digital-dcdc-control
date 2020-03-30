@@ -43,6 +43,7 @@ plant = ss(A_avg, B_avg, C_avg, D_avg);
 [n_plant, d_plant] = ss2tf(A_avg, B_avg, C_avg, D_avg);
 
 G_plant = tf(n_plant, d_plant);
+G_plant.name = "Cont. Time Plant only"
 
 %% ADC delay
 
@@ -80,6 +81,7 @@ G_div = tf([R1*Cz 1], [Kdiv*R1*(Cz+Cp) 1]);     % continuous time domain (S doma
 % Plant + divider transfer function
 
 G_plant_div = G_plant * G_div;
+G_plant.name = "Cont. Time Plant plus Divider"
 
 
 #mag_db = cellfun (@mag2db, mag, "uniformoutput", false);
