@@ -54,30 +54,6 @@ G_plant = tf(n_plant, d_plant);
 % TO BE IMPLEMENTED
 
 
-% Calculation of Bandwidth of the Plant:
-
-% Stepinfo function now available based on funtion forum input here: https://lists.gnu.org/archive/html/help-octave/2015-02/msg00023.html
-% Function is not verified as working.
-%plant_info = stepinfo(plant);
-%[Wn_plant,DR_plant,Poles_plant] = damp(plant);
-
-% BEWARE 0 Stepinfo function is providing incorrect information.
-%    temp1 = sqrt((4*(DR_plant(1))^4) - (4*(DR_plant(1))^2) +2);
-%    temp2 =  1 - (2*(DR_plant(1))^2);
-%
-%    %%Depends on plant info - using current stepinfo command (not tested)
-%    temp3 = 4/(plant_info.SettlingTime*(DR_plant(1)));
-%    BW_plant = temp3*sqrt(temp1 + temp2)
-
-% plotting Bode plot for Plant:
-
-    %% Use bode (Octave) vs bodeplot (Matlab) , similar functionality
-%    figure(2)
-%    bode(plant);
-%    title('Bode diagram of the Plant only (continous model)');
-%    [Gm_Plant,Pm_Plant,Wcg_Plant,Wcp_Plant] = margin(plant);
-
-
 %% Divider circuitry
 
 % Documentation here: https://learn.libre.solar/b/dc-control/development/digital_control.html#modelling-the-digital-controller
